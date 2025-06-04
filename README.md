@@ -4,7 +4,13 @@ This repository contains the original C++/SFML Burgertime clone as well as a new
 
 ## Play in your browser
 
-Open `web/index.html` in any modern browser to play. No installation or compilation is required.
+Serve the `web/` folder with any local web server and then open `index.html` in your browser. For example:
+
+```bash
+python3 -m http.server --directory web
+```
+
+Navigate to <http://localhost:8000> and the game will begin automatically.
 
 Controls:
 

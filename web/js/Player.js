@@ -26,7 +26,7 @@ class Player {
       velX = this.speed;
       this.sprite.anims.play('walkRight', true);
     }
-    const onLadder = this.scene.physics.overlapCirc(this.sprite.x, this.sprite.y, 16, true, this.scene.ladderGroup);
+    const onLadder = this.scene.physics.overlap(this.sprite, this.scene.ladderGroup);
     if (onLadder && (this.keys.up.isDown || this.keys.w.isDown)) {
       velY = -this.climbSpeed;
       this.sprite.anims.play('climb', true);

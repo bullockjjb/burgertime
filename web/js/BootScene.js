@@ -29,8 +29,9 @@ class BootScene extends Phaser.Scene {
     );
 
     // Audio from the original audio/ folder
+    // The repo only contains one main music track so reuse it for all levels
     for (let i = 1; i <= 5; i++) {
-      this.load.audio(`${ASSETS.AUDIO_BGM}${i}`, `../audio/${i}1_main.ogg`);
+      this.load.audio(`${ASSETS.AUDIO_BGM}${i}`, '../audio/11_main.ogg');
     }
     this.load.audio(ASSETS.SFX_DROP, '../audio/0_burger_going_down.ogg');
     this.load.audio(ASSETS.SFX_ENEMY_STUN, '../audio/15_peppered.ogg');
