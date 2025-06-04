@@ -1,29 +1,25 @@
-# Burgertime Clone
+# Accelevation Time
 
-<a href="https://ibb.co/vZWTFmL"><img src="https://i.ibb.co/vZWTFmL/BT.png" alt="Burgertime Clone screenshot" border="0"></a>
+This repository contains the original C++/SFML Burgertime clone as well as a new lightweight HTML5 version called **Accelevation Time**. All original sprites and audio are preserved in `audio/` and `img/`.
 
-_Implementation of the classic arcade "Burgertime", originally developed and published by Data East in 1982.
-It features 2 new difficulty modes that make use of optimal path-finding and swarming techniques, as well as new audio assets.
-Additionally, it is possible to build custom levels._
+## Play in your browser
 
-## Trailer 🎞️
+Serve the `web/` folder with any local web server and then open `index.html` in your browser. For example:
 
-[![Trailer of the game](http://img.youtube.com/vi/mumhH49J1sg/0.jpg)](http://www.youtube.com/watch?v=mumhH49J1sg "Burgertime Clone Trailer")
+```bash
+python3 -m http.server --directory web
+```
 
-## How to play 🔧
+Navigate to <http://localhost:8000> and the game will begin automatically.
 
-_Inside the "Releases" section you may find a ready-to-play executable for Windows 10.
-If you wish to compile the source code, you will need to install SFML v2.5.1. The project includes a Makefile._
+Controls:
 
-## Built with 🛠️
+- **Arrow keys** or **WASD** – Move
+- **Space** – Use power-up
+- **Esc** – Pause
+- **Enter** – Resume from pause
 
-* C++
-* [SFML](https://www.sfml-dev.org/)
+The web version features five short levels with simplified enemy AI and rebranded text. Sprites and sounds remain under the original GPL-3.0 license from the Burgertime project.
 
-## Authors ✒️
+The C++ source code and makefile remain for reference but are not needed to run the web build.
 
-* **Lorién López Villellas** - [LorienLV](https://github.com/LorienLV)
-* **Adrián Samatán Alastuey** - [Sakerdot](https://github.com/Sakerdot)
-* **Isaac Valdivia López** - [IsaacValdivia](https://github.com/IsaacValdivia)
-
-All 3 members of the team worked mostly simultaneously on all different areas of the development: 2D Graphics, AI, Gameplay, etc.
