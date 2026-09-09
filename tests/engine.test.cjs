@@ -2,6 +2,32 @@ const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const catalog = require("../js/catalog.js");
 const { Game, FLOORS, CENTERS } = require("../js/engine.js");
+
+test("builder choices are cosmetic and preserve identical gameplay", () => {
+  const female = new Game(catalog),
+    male = new Game(catalog);
+  female.start("guided", "female");
+  male.start("guided", "male");
+  for (let i = 0; i < 600; i++) {
+    const input =
+      i < 240
+        ? { right: true }
+        : i < 320
+          ? { down: true }
+          : { left: true, pulse: true };
+    female.step(1 / 60, input);
+    male.step(1 / 60, input);
+  }
+  const f = female.snapshot(),
+    m = male.snapshot();
+  assert.equal(f.character, "female");
+  assert.equal(m.character, "male");
+  delete f.character;
+  delete m.character;
+  assert.deepEqual(f, m);
+  male.start("guided", "invalid");
+  assert.equal(male.character, "female");
+});
 const tick = (game, seconds, input = {}) => {
   for (let i = 0; i < Math.ceil(seconds * 60); i++) game.step(1 / 60, input);
 };

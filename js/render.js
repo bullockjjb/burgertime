@@ -313,9 +313,12 @@
       this.catalog = catalog;
       this.reduced = false;
       this.previewLevel = -1;
+      window.addEventListener("resize", () => {
+        this.previewLevel = -1;
+      });
     }
     drawProductPreview(level) {
-      const ctx = this.preview.getContext("2d");
+      const ctx = AccelevationArt.prepareCanvas(this.preview, 280, 154);
       ctx.clearRect(0, 0, 280, 154);
       product(ctx, this.catalog[level].id, 137, 116, 1.04, 4);
       this.preview.setAttribute(
@@ -324,7 +327,7 @@
       );
     }
     draw(game, time) {
-      const ctx = this.ctx;
+      const ctx = AccelevationArt.prepareCanvas(this.canvas, W, H);
       ctx.clearRect(0, 0, W, H);
       const bg = ctx.createLinearGradient(0, 0, 0, H);
       bg.addColorStop(0, "#142631");
@@ -477,7 +480,7 @@
         .filter((p) => p.state === "idle")
         .forEach((p) => this.part(ctx, p, game));
       game.enemies.forEach((e, i) => this.enemy(ctx, e, time, i));
-      this.player(ctx, game.player, time);
+      this.player(ctx, game.player, time, game.character);
       game.parts
         .filter((p) => p.state === "falling")
         .forEach((p) => this.part(ctx, p, game));
@@ -499,224 +502,76 @@
           text(ctx, f.text, f.x, f.y, f.color, 10, "center", 700);
           ctx.restore();
         });
-      // Subtle scanlines retain the arcade character without obscuring the parts.
-      for (let y = 0; y < H; y += 4) rect(ctx, 0, y, W, 1, "#020a120b");
       if (this.previewLevel !== game.level) {
         this.drawProductPreview(game.level);
         this.previewLevel = game.level;
       }
     }
     part(ctx, p, game) {
-      const def = this.catalog[game.level].parts[p.kind],
-        seg = PART_WIDTH / 5,
-        left = p.x - PART_WIDTH / 2;
-      if (p.state === "falling") {
-        ctx.save();
-        ctx.globalAlpha = 0.1;
-        rect(ctx, left, p.y - 40, PART_WIDTH, 25, def.color);
-        ctx.restore();
-      }
+      const def = this.catalog[game.level].parts[p.kind];
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      AccelevationArt.carrier(ctx, def.type, def.color, {
+        family: this.catalog[game.level].id,
+      });
+      const seg = PART_WIDTH / 5;
       for (let i = 0; i < 5; i++) {
-        const x = left + i * seg + 1,
-          y = p.y - 20 + (p.steps[i] ? 5 : 0),
-          w = seg - 2;
-        rect(ctx, x + 2, y + 3, w, 18, "#08131b");
-        rect(ctx, x, y, w, 17, "#354d5b");
-        rect(ctx, x, y, w, 3, def.color);
-        line(ctx, x, y + 3, x, y + 17, "#a7bdc966");
-        const c = def.color;
-        switch (def.type) {
-          case "panel":
-          case "roof":
-          case "door":
-            rect(ctx, x + 3, y + 4, w - 6, 10, "#77bfd936");
-            line(ctx, x + 3, y + 13, x + w - 4, y + 5, "#a8d0de66");
-            if (def.type === "door") rect(ctx, x + w - 7, y + 7, 2, 6, c);
-            break;
-          case "frame":
-          case "beam":
-          case "post":
-          case "arm":
-            rect(ctx, x + 3, y + 6, w - 6, 3, c);
-            rect(ctx, x + 4, y + 5, 3, 9, c);
-            rect(ctx, x + w - 7, y + 5, 3, 9, c);
-            break;
-          case "bolt":
-            for (let j = 0; j < 3; j++) {
-              poly(
-                ctx,
-                [
-                  [x + 7 + j * 10, y + 5],
-                  [x + 10 + j * 10, y + 7],
-                  [x + 10 + j * 10, y + 11],
-                  [x + 7 + j * 10, y + 13],
-                  [x + 4 + j * 10, y + 11],
-                  [x + 4 + j * 10, y + 7],
-                ],
-                c,
-              );
-              rect(ctx, x + 6 + j * 10, y + 8, 2, 2, "#243b47");
-            }
-            break;
-          case "breaker":
-            for (let j = 0; j < 3; j++) {
-              rect(ctx, x + 4 + j * 10, y + 5, 7, 9, "#acb9be");
-              rect(ctx, x + 6 + j * 10, y + 7, 3, 5, "#1a2a34");
-            }
-            break;
-          case "cable":
-          case "pipe":
-            for (let j = 0; j < 2; j++) {
-              line(ctx, x + 3, y + 7 + j * 5, x + w - 3, y + 7 + j * 5, c, 2);
-              rect(ctx, x + 5, y + 5 + j * 5, 3, 4, "#c2d5dd");
-            }
-            break;
-          case "enclosure":
-            rect(ctx, x + 4, y + 5, w - 8, 9, "#94a9b2");
-            rect(ctx, x + w - 9, y + 7, 2, 5, "#283e4b");
-            break;
-          case "tray":
-            for (let j = 0; j < 5; j++)
-              rect(ctx, x + 4 + j * 6, y + 5, 2, 9, c);
-            rect(ctx, x + 3, y + 11, w - 6, 2, c);
-            break;
-          case "label":
-            rect(ctx, x + 6, y + 5, w - 12, 9, "#cfdfd5");
-            for (let j = 0; j < 5; j++)
-              rect(ctx, x + 8 + j * 3, y + 6, 1, 6, "#28434b");
-            break;
-        }
+        const x = -PART_WIDTH / 2 + i * seg;
+        AccelevationArt.round(
+          ctx,
+          x + 3,
+          -4,
+          seg - 6,
+          5,
+          1.5,
+          p.steps[i] ? "#fda35d" : "#304d5d",
+          p.steps[i] ? "#ffd5a8" : "#9ab6c5",
+          0.8,
+        );
         if (p.steps[i]) {
-          rect(ctx, x + 1, y + 15, w - 2, 3, orange);
-          text(ctx, "✓", x + w / 2, y - 3, "#ffba7f", 10, "center");
+          text(ctx, "✓", x + seg / 2, -7, "#ffd1a2", 10, "center");
+        } else {
+          ctx.fillStyle = "#d6e4e9";
+          ctx.fillRect(x + seg / 2 - 1, -3, 2, 2);
         }
       }
       if (p.state === "idle") {
-        text(
+        ctx.font = "600 10px Barlow, Arial, sans-serif";
+        const tw = ctx.measureText(def.name.toUpperCase()).width;
+        AccelevationArt.round(
           ctx,
-          def.name.toUpperCase(),
-          p.x,
-          p.y - 28,
-          "#9cb2c0",
-          8,
-          "center",
+          -tw / 2 - 7,
+          -72,
+          tw + 14,
+          15,
+          3,
+          "#132733ee",
         );
+        text(ctx, def.name.toUpperCase(), 0, -61, "#d4e5ed", 10, "center");
       }
+      ctx.restore();
     }
-    player(ctx, p, time) {
-      ctx.save();
-      ctx.translate(Math.round(p.x), Math.round(p.y));
-      if (p.invulnerable > 0 && !this.reduced)
-        ctx.globalAlpha = 0.55 + Math.sin(time * 14) * 0.2;
-      const stride = p.moving && !this.reduced ? Math.sin(p.walk) * 4 : 0;
-      ctx.fillStyle = "#020c1480";
-      ctx.beginPath();
-      ctx.ellipse(0, 1, 18, 4, 0, 0, Math.PI * 2);
-      ctx.fill();
-      rect(ctx, -10, -17, 8, 14 + stride, "#8b9fa9");
-      rect(ctx, 3, -17, 8, 14 - stride, "#7b8e99");
-      rect(ctx, -12, -4 + stride, 12, 5, "#152630");
-      rect(ctx, 3, -4 - stride, 12, 5, "#152630");
-      rect(ctx, -13, -34, 27, 20, orange);
-      rect(ctx, -10, -33, 5, 17, "#ffd69e");
-      rect(ctx, 6, -33, 5, 17, "#ffd69e");
-      rect(ctx, -13, -22, 27, 3, "#f7e1b7");
-      rect(ctx, -14, -31, 5, 16, "#526d7b");
-      rect(ctx, 12, -31, 5, 16, "#526d7b");
-      rect(ctx, -14, -18, 5, 5, "#dfbb99");
-      rect(ctx, 12, -18, 5, 5, "#dfbb99");
-      rect(ctx, -8, -46, 18, 13, "#e2bea2");
-      rect(ctx, -6, -40, 16, 4, "#3b515d");
-      rect(ctx, 1 + p.facing * 4, -40, 3, 3, "#bad8e4");
-      rect(ctx, -10, -53, 23, 10, "#f6f0dd");
-      rect(ctx, -14, -46, 32, 4, "#cfd4c8");
-      rect(ctx, 0, -54, 4, 9, orange);
-      if (p.climbing) {
-        rect(ctx, -16, -40, 5, 7, "#dfbb99");
-        rect(ctx, 13, -40, 5, 7, "#dfbb99");
-      }
+    player(ctx, p, time, character) {
+      AccelevationArt.builder(ctx, {
+        ...p,
+        character,
+        scale: 0.88,
+        moving: p.moving && !this.reduced,
+      });
       if (p.invulnerable > 0) {
-        ctx.strokeStyle = "#a2d7e34a";
-        ctx.lineWidth = 2;
+        ctx.save();
+        ctx.strokeStyle = "#ade4ee";
+        ctx.lineWidth = 1.5;
+        ctx.globalAlpha = this.reduced ? 0.65 : 0.5 + Math.sin(time * 7) * 0.15;
         ctx.beginPath();
-        ctx.ellipse(1, -24, 24, 32, 0, 0, Math.PI * 2);
+        ctx.ellipse(p.x, p.y - 31, 25, 36, 0, 0, Math.PI * 2);
         ctx.stroke();
+        ctx.restore();
       }
-      text(ctx, "YOU", 1, -62, "#ffbc84", 8, "center");
-      ctx.restore();
+      text(ctx, "YOU", p.x, p.y - 77, "#ffc38e", 9, "center");
     }
-    enemy(ctx, e, time, i) {
-      if (e.respawn > 0) return;
-      ctx.save();
-      ctx.translate(Math.round(e.x), Math.round(e.y));
-      const c =
-        e.stun > 0
-          ? "#8fceda"
-          : e.kind === "delay"
-            ? "#dfb570"
-            : e.kind === "heat"
-              ? "#e28e61"
-              : "#cf8790";
-      const bounce =
-        this.reduced || e.stun > 0 ? 0 : Math.sin(time * 7 + i) * 2;
-      ctx.translate(0, bounce);
-      rect(ctx, -14, -5, 6, 5, "#788d96");
-      rect(ctx, 8, -5, 6, 5, "#788d96");
-      if (e.kind === "delay") {
-        ctx.beginPath();
-        ctx.arc(0, -21, 16, 0, Math.PI * 2);
-        ctx.fillStyle = c;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(0, -21, 11, 0, Math.PI * 2);
-        ctx.fillStyle = "#263e49";
-        ctx.fill();
-        line(ctx, 0, -28, 0, -21, c, 2);
-        line(ctx, 0, -21, 6, -17, c, 2);
-        rect(ctx, -4, -41, 8, 5, c);
-        rect(ctx, -9, -7, 18, 4, c);
-      } else if (e.kind === "heat") {
-        poly(
-          ctx,
-          [
-            [-15, -7],
-            [-17, -23],
-            [-7, -32],
-            [-4, -22],
-            [2, -44],
-            [10, -31],
-            [16, -19],
-            [12, -7],
-          ],
-          c,
-        );
-        rect(ctx, -7, -21, 4, 4, "#273a44");
-        rect(ctx, 5, -21, 4, 4, "#273a44");
-        rect(ctx, -4, -11, 10, 3, "#ffc896");
-      } else {
-        rect(ctx, -17, -30, 34, 22, c);
-        rect(ctx, -12, -34, 24, 5, "#e6b2b9");
-        rect(ctx, -13, -25, 26, 10, "#233944");
-        rect(ctx, -9, -23, 5, 4, "#efc0c3");
-        rect(ctx, 5, -23, 5, 4, "#efc0c3");
-        line(ctx, -21, -26, -17, -20, c, 3);
-        line(ctx, 17, -20, 22, -27, c, 3);
-        rect(ctx, -4, -12, 8, 2, "#263e49");
-      }
-      if (e.stun > 0) {
-        text(ctx, "✦  ✦", 0, -45, "#b4e7ee", 13, "center");
-        text(ctx, "ON HOLD", 0, -57, "#9ac7d1", 7, "center");
-      } else
-        text(
-          ctx,
-          e.kind.toUpperCase(),
-          0,
-          e.kind === "heat" ? -50 : -46,
-          c,
-          7,
-          "center",
-        );
-      ctx.restore();
+    enemy(ctx, e, time) {
+      AccelevationArt.setback(ctx, e, time, this.reduced);
     }
   }
   root.AccelevationRenderer = { Renderer, product };

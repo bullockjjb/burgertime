@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="styles.css" />
     <script defer src="js/catalog.js"></script>
     <script defer src="js/engine.js"></script>
+    <script defer src="js/art.js"></script>
     <script defer src="js/render.js"></script>
     <script defer src="js/app.js"></script>
   </head>
@@ -128,13 +129,47 @@
                 ><span id="board-name">CONTAINMENT / ASSEMBLY FLOOR</span>
               </div>
               <div class="game-overlay" id="game-overlay">
-                <div class="start-card" id="overlay-card">
-                  <span class="tag">YOUR SHIFT STARTS HERE</span>
-                  <h2>Build what’s <em>next.</em></h2>
-                  <p>
-                    Climb. Cross. Assemble.<br />Turn components into
-                    customer-ready systems.
-                  </p>
+                <div class="start-card welcome-card" id="overlay-card">
+                  <span class="tag">WELCOME TO THE CREW</span>
+                  <h2>Welcome to<br />Accelevation <em>Time.</em></h2>
+                  <p>Choose your builder. Let’s build what’s next.</p>
+                  <div
+                    class="character-picker"
+                    role="group"
+                    aria-label="Choose your builder"
+                  >
+                    <button
+                      class="character-option selected"
+                      data-character="female"
+                      aria-pressed="true"
+                    >
+                      <span class="character-check" aria-hidden="true">✓</span>
+                      <canvas
+                        width="190"
+                        height="126"
+                        data-avatar="female"
+                        aria-hidden="true"
+                      ></canvas>
+                      <strong>Female builder</strong>
+                    </button>
+                    <button
+                      class="character-option"
+                      data-character="male"
+                      aria-pressed="false"
+                    >
+                      <span class="character-check" aria-hidden="true">✓</span>
+                      <canvas
+                        width="190"
+                        height="126"
+                        data-avatar="male"
+                        aria-hidden="true"
+                      ></canvas>
+                      <strong>Male builder</strong>
+                    </button>
+                  </div>
+                  <span class="crew-note"
+                    >Same speed. Same skills. Your choice.</span
+                  >
                   <div class="mode-picker" role="group" aria-label="Game mode">
                     <button
                       data-mode="guided"
@@ -156,7 +191,7 @@
                     Start building <span aria-hidden="true">↗</span>
                   </button>
                   <span class="start-caption"
-                    >4 PROJECTS · ABOUT 5 MINUTES · NO SIGN-IN</span
+                    >4 PROJECTS · 2–5 MINUTES · NO SIGN-IN</span
                   >
                 </div>
               </div>

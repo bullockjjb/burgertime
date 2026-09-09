@@ -36,6 +36,7 @@
       this.catalog = catalog;
       this.onEvent = onEvent;
       this.mode = "guided";
+      this.character = "female";
       this.status = "ready";
       this.score = 0;
       this.elapsed = 0;
@@ -48,8 +49,9 @@
     event(type, data = {}) {
       this.onEvent({ type, ...data });
     }
-    start(mode = "guided") {
+    start(mode = "guided", character = "female") {
       this.mode = mode === "arcade" ? "arcade" : "guided";
+      this.character = character === "male" ? "male" : "female";
       this.score = 0;
       this.elapsed = 0;
       this.lives = 3;
@@ -151,6 +153,7 @@
         installed: this.installed,
         pulseCooldown: this.pulseCooldown,
         player: { ...this.player },
+        character: this.character,
         parts: this.parts.map((p) => ({ ...p, steps: [...p.steps] })),
         enemies: this.enemies.map((e) => ({ ...e })),
       };

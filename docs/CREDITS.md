@@ -12,11 +12,13 @@ Their original source, license, and README remain available. The browser game is
 
 ## Browser assets
 
-| Asset | Origin / terms |
-| --- | --- |
-| Accelevation wordmark and icon | Supplied by the repository owner; company trademarks and logo rights remain with their owner. Unmodified files. |
-| Barlow Regular, Semibold, Bold | Supplied font files; SIL Open Font License in `assets/fonts/OFL.txt`. |
-| Technician, setbacks, factory, components, product illustrations | Original programmatic vector artwork in `js/render.js`; distributed with the game code. |
-| Sound effects | Original Web Audio oscillator synthesis in `js/app.js`. |
+| Asset                                                                          | Origin / terms                                                                                                    |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Accelevation wordmark and icon                                                 | Supplied by the repository owner; company trademarks and logo rights remain with their owner. Unmodified files.   |
+| Barlow Regular, Semibold, Bold                                                 | Supplied font files; SIL Open Font License in `assets/fonts/OFL.txt`.                                             |
+| Female and male builders, setbacks, factory, components, product illustrations | Original resolution-independent vector artwork in `js/art.js` and `js/render.js`; distributed with the game code. |
+| Sound effects                                                                  | Original Web Audio oscillator synthesis in `js/app.js`.                                                           |
 
 No legacy BurgerTime character sprites, music, sound effects, fonts, or maps are shipped by the browser build. No external asset CDN is used. Accelevation Time is not affiliated with the original arcade game's publisher.
+
+The portable HTML embeds these credits, the complete GPL text, and the Barlow font license in an inert `bundled-licenses` template. All game source code is included in the file; the readable source and build scripts are also in this repository.

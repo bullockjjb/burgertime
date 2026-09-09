@@ -33,6 +33,8 @@
     },
   };
   let selectedMode = "guided",
+    selectedCharacter =
+      storage.get("character", "female") === "male" ? "male" : "female",
     soundOn = storage.get("sound", false),
     audioContext,
     lastSound = 0,
@@ -271,15 +273,29 @@
   }
   function start() {
     hideOverlay();
-    game.start(selectedMode);
+    game.start(selectedMode, selectedCharacter);
     updateMission();
     tone("quiz");
     toast(
-      "Cross all 5 sections of each component. Then climb down and repeat.",
+      "Cross the 5 markers on each component carrier. Climb down and repeat.",
       5500,
     );
   }
   function bindStart() {
+    document.querySelectorAll("[data-character]").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedCharacter = button.dataset.character;
+        game.character = selectedCharacter;
+        storage.set("character", selectedCharacter);
+        document.querySelectorAll("[data-character]").forEach((option) => {
+          const chosen = option.dataset.character === selectedCharacter;
+          option.classList.toggle("selected", chosen);
+          option.setAttribute("aria-pressed", String(chosen));
+        });
+      });
+    });
+    document.querySelector(`[data-character="${selectedCharacter}"]`).click();
+    drawCrewPreviews();
     document.querySelectorAll("[data-mode]").forEach((b) =>
       b.addEventListener("click", () => {
         selectedMode = b.dataset.mode;
@@ -294,13 +310,31 @@
     );
     $("start-button").addEventListener("click", start);
   }
+  function drawCrewPreviews() {
+    document.querySelectorAll("[data-avatar]").forEach((canvas) => {
+      const ctx = AccelevationArt.prepareCanvas(canvas, 190, 126);
+      ctx.clearRect(0, 0, 190, 126);
+      ctx.strokeStyle = "#718e9a33";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(95, 112, 49, 9, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      AccelevationArt.builder(ctx, {
+        x: 95,
+        y: 113,
+        scale: 1.36,
+        character: canvas.dataset.avatar,
+      });
+    });
+  }
+  window.addEventListener("resize", drawCrewPreviews);
   function returnToStart() {
     game.installLevel(0);
     game.status = "ready";
     game.score = 0;
     game.elapsed = 0;
     game.mode = selectedMode;
-    showOverlay(startMarkup, "start-card");
+    showOverlay(startMarkup, "start-card welcome-card");
     bindStart();
     document.querySelector(`[data-mode="${selectedMode}"]`).click();
     updateMission();
@@ -435,7 +469,7 @@
       `<h2 id="dialog-title">Know what you’re building.</h2><div class="guide-tabs" role="tablist" aria-label="Product families">${catalog.map((c, i) => `<button role="tab" id="guide-tab-${i}" aria-selected="${index === i}" aria-controls="guide-panel" tabindex="${index === i ? 0 : -1}" data-guide="${i}">${c.short}</button>`).join("")}</div><section id="guide-panel" role="tabpanel" aria-labelledby="guide-tab-${index}"><canvas class="guide-illustration" id="guide-art" width="280" height="170" role="img" aria-label="${f.name} illustration"></canvas><span class="eyebrow">${f.label}</span><h3>${f.name}</h3><p>${f.takeaway}</p><h3>What goes into it</h3><ul class="guide-parts">${f.parts.map((p) => `<li><strong>${p.name}</strong> — ${p.detail}</li>`).join("")}</ul><div class="guide-callout"><h3>Take it to the conversation</h3><p>“${f.sales}”</p></div><p class="dialog-note">${f.proof}</p><a class="source-link" href="${f.source}" target="_blank" rel="noopener noreferrer">Explore ${f.sourceTitle} ↗</a></section>`,
     );
     AccelevationRenderer.product(
-      $("guide-art").getContext("2d"),
+      AccelevationArt.prepareCanvas($("guide-art"), 280, 170),
       f.id,
       138,
       126,
@@ -465,7 +499,7 @@
   function openHelp() {
     openDialog(
       "YOUR FIRST SHIFT",
-      `<h2 id="dialog-title">Small moves. Big builds.</h2><div class="steps"><div><span class="step-number">1</span><div><strong>Walk every section.</strong><p>Use the arrow keys or W A S D. Cross all five sections of a component to turn its underside orange and drop it to the next floor.</p></div></div><div><span class="step-number">2</span><div><strong>Climb down. Keep the chain going.</strong><p>Line up with a ladder, then press up or down. A falling component drops the one below it. Sweep each floor to deliver all four layers into each bay.</p></div></div><div><span class="step-number">3</span><div><strong>Keep setbacks out of your way.</strong><p>Rework bots, delays, and heat chase you. Space sends a quality pulse that holds nearby setbacks for four seconds. Falling components clear them, too.</p></div></div><div><span class="step-number">4</span><div><strong>Take the know-how with you.</strong><p>Finish three bays, learn the customer value, and move to the next product. Answer a quick question for a bonus, or skip it and keep playing.</p></div></div></div><p><strong>Guided:</strong> slower setbacks, unlimited tries, six-second pulse recharge.<br><strong>Arcade:</strong> three lives, quicker setbacks, nine-second recharge. Completing a project restores one life.</p><label class="option-row"><input type="checkbox" id="reduce-motion" ${renderer.reduced ? "checked" : ""}> Reduce decorative motion and flashing</label><p class="dialog-note">P or Escape pauses. Touch controls appear on touch devices. Switching tabs pauses the shift automatically. Scores stay on this browser, separately for Guided and Arcade.</p>`,
+      `<h2 id="dialog-title">Small moves. Big builds.</h2><div class="steps"><div><span class="step-number">1</span><div><strong>Walk every section.</strong><p>Use the arrow keys or W A S D. Cross all five markers on a component carrier to turn them orange and drop the carrier to the next floor.</p></div></div><div><span class="step-number">2</span><div><strong>Climb down. Keep the chain going.</strong><p>Line up with a ladder, then press up or down. Release the key between floors. A falling component drops the one below it. Sweep each floor to deliver all four layers into each bay.</p></div></div><div><span class="step-number">3</span><div><strong>Keep setbacks out of your way.</strong><p>Rework bots, delays, and heat chase you. Space sends a quality pulse that holds nearby setbacks for four seconds. Falling components clear them, too.</p></div></div><div><span class="step-number">4</span><div><strong>Take the know-how with you.</strong><p>Finish three bays, learn the customer value, and move to the next product. Answer a quick question for a bonus, or skip it and keep playing.</p></div></div></div><p><strong>Guided:</strong> slower setbacks, unlimited tries, six-second pulse recharge.<br><strong>Arcade:</strong> three lives, quicker setbacks, nine-second recharge. Completing a project restores one life.</p><label class="option-row"><input type="checkbox" id="reduce-motion" ${renderer.reduced ? "checked" : ""}> Reduce decorative motion and flashing</label><p class="dialog-note">P or Escape pauses. Touch controls appear on touch devices. Switching tabs pauses the shift automatically. Scores stay on this browser, separately for Guided and Arcade.</p>`,
     );
     $("reduce-motion").onchange = (e) => {
       renderer.reduced = e.target.checked;
