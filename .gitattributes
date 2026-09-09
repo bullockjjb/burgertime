@@ -1,29 +1,5 @@
-# Set the default behavior, in case people don't have core.autocrlf set.
-* text eol=lf
-
-# Explicitly declare text files you want to always be normalized and converted
-# to native line endings on checkout.
-*.c text eol=lf
-*.h text eol=lf
-*.md text eol=lf
-*.txt text eol=lf
-
-# Denote all files that are truly binary and should not be modified.
-*.acorn binary
-*.dll binary
-*.pdf binary
-*.tar binary
-*.zip binary
-*.exe binary
-*.gif binary
-*.jar binary
-*.jpa binary
-*.jpeg binary
-*.jpg binary
-*.jps binary
-*.phar binary
+# Keep font and image bytes intact under Windows line-ending defaults.
+*.ttf binary
 *.png binary
-*.z binary
-*.zip binary
-*.wav binary
-*.ogg binary
+*.woff binary
+*.woff2 binary

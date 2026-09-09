@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#15191c" />
+    <meta
+      name="description"
+      content="Build the infrastructure behind the internet. Accelevation Time is a quick arcade adventure through containment, structure, power, and modular data center solutions."
+    />
+    <title>Accelevation Time — Build what’s next.</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href="assets/brand/accelevation-icon.png"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="js/catalog.js"></script>
+    <script defer src="js/engine.js"></script>
+    <script defer src="js/render.js"></script>
+    <script defer src="js/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#game">Skip to game</a>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Accelevation Time home"
+        ><img
+          src="assets/brand/accelevation-light.png"
+          alt="Accelevation"
+          width="220"
+          height="47"
+      /></a>
+      <div class="header-label">
+        <span class="status-dot"></span> THE INFRASTRUCTURE ARCADE
+      </div>
+      <nav aria-label="Game information">
+        <button class="text-button" id="guide-button">
+          <span aria-hidden="true">▤</span> Product field guide
+        </button>
+        <button class="help-button" id="help-button" aria-label="How to play">
+          ?
+        </button>
+      </nav>
+    </header>
+    <main>
+      <section class="page-heading" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">DESIGN. MANUFACTURE. INSTALL.</p>
+          <h1 id="page-title">Accelevation <em>Time.</em></h1>
+        </div>
+        <p class="heading-note">
+          Big infrastructure. Small game.<br /><span
+            >Build the systems behind the data center.</span
+          >
+        </p>
+      </section>
+      <section class="arcade" id="game" aria-label="Accelevation Time game">
+        <div class="scorebar">
+          <div class="level-counter">
+            <span class="mini-label">PROJECT</span
+            ><strong
+              ><span id="level-number">01</span><small> / 04</small></strong
+            >
+          </div>
+          <div>
+            <span class="mini-label">SCORE</span
+            ><strong id="score">000000</strong>
+          </div>
+          <div class="best-stat">
+            <span class="mini-label">PERSONAL BEST</span
+            ><strong id="best">000000</strong>
+          </div>
+          <div>
+            <span class="mini-label">SHIFT TIME</span
+            ><strong id="timer">00:00</strong>
+          </div>
+          <div class="health-stat">
+            <span class="mini-label" id="health-label">GUIDED MODE</span
+            ><strong id="health">∞ <small>TRIES</small></strong>
+          </div>
+          <div class="game-actions">
+            <button
+              class="icon-button"
+              id="sound-button"
+              aria-label="Turn sound on"
+              aria-pressed="false"
+              title="Sound"
+            >
+              ♫<span class="sound-slash"></span>
+            </button>
+            <button
+              class="icon-button"
+              id="pause-button"
+              aria-label="Pause game"
+              title="Pause (P)"
+              disabled
+            >
+              Ⅱ
+            </button>
+            <button
+              class="icon-button"
+              id="fullscreen-button"
+              aria-label="Enter fullscreen"
+              title="Fullscreen"
+            >
+              ⛶
+            </button>
+          </div>
+        </div>
+        <div class="game-layout">
+          <div class="play-column">
+            <div class="canvas-wrap" id="canvas-wrap">
+              <canvas
+                id="board"
+                width="960"
+                height="660"
+                tabindex="0"
+                aria-label="Assembly floor. Move with arrows or W A S D. Cross all five sections of a component to drop it. Climb ladders with up and down. Space activates a quality pulse. P pauses."
+                aria-describedby="game-instructions"
+                >This game needs a browser with Canvas support. Use the product
+                field guide to explore the four product families.</canvas
+              >
+              <div class="board-label">
+                <span class="status-dot"></span
+                ><span id="board-name">CONTAINMENT / ASSEMBLY FLOOR</span>
+              </div>
+              <div class="game-overlay" id="game-overlay">
+                <div class="start-card" id="overlay-card">
+                  <span class="tag">YOUR SHIFT STARTS HERE</span>
+                  <h2>Build what’s <em>next.</em></h2>
+                  <p>
+                    Climb. Cross. Assemble.<br />Turn components into
+                    customer-ready systems.
+                  </p>
+                  <div class="mode-picker" role="group" aria-label="Game mode">
+                    <button
+                      data-mode="guided"
+                      class="mode-option selected"
+                      aria-pressed="true"
+                    >
+                      <strong>Guided</strong><span>Learn as you build</span>
+                    </button>
+                    <button
+                      data-mode="arcade"
+                      class="mode-option"
+                      aria-pressed="false"
+                    >
+                      <strong>Arcade</strong
+                      ><span>Three lives. Go for score.</span>
+                    </button>
+                  </div>
+                  <button class="primary-button" id="start-button">
+                    Start building <span aria-hidden="true">↗</span>
+                  </button>
+                  <span class="start-caption"
+                    >4 PROJECTS · ABOUT 5 MINUTES · NO SIGN-IN</span
+                  >
+                </div>
+              </div>
+              <div
+                class="board-toast"
+                id="board-toast"
+                aria-live="polite"
+              ></div>
+            </div>
+            <div class="controls-strip" id="game-instructions">
+              <span
+                ><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd>
+                <span>Move & climb</span></span
+              >
+              <span><kbd>SPACE</kbd> <span>Quality pulse</span></span>
+              <span><kbd>P</kbd> <span>Pause</span></span>
+            </div>
+            <div class="touch-controls" aria-label="Touch game controls">
+              <div class="dpad">
+                <button data-control="up" aria-label="Move up">↑</button
+                ><button data-control="left" aria-label="Move left">←</button
+                ><button data-control="down" aria-label="Move down">↓</button
+                ><button data-control="right" aria-label="Move right">→</button>
+              </div>
+              <button class="touch-pulse" data-control="pulse">
+                ◎ <span>QUALITY<br />PULSE</span>
+              </button>
+            </div>
+          </div>
+          <aside class="mission-panel" aria-labelledby="mission-title">
+            <div class="mission-top">
+              <span class="mini-label">ON THE BUILD SHEET</span
+              ><span class="project-badge" id="project-badge">01</span>
+            </div>
+            <h2 id="mission-title">Containment</h2>
+            <p class="mission-description" id="mission-description"></p>
+            <div class="product-visual">
+              <canvas
+                id="product-preview"
+                width="280"
+                height="154"
+                role="img"
+                aria-label="Illustration of a containment aisle"
+              ></canvas
+              ><span id="product-caption">HOT / COLD AISLE SYSTEM</span>
+            </div>
+            <div class="progress-heading">
+              <span>COMPONENTS INSTALLED</span
+              ><strong id="progress-count">0 / 12</strong>
+            </div>
+            <div
+              class="progress-track"
+              role="progressbar"
+              aria-label="Components installed"
+              aria-valuemin="0"
+              aria-valuemax="12"
+              aria-valuenow="0"
+              id="build-progress"
+            >
+              <div id="progress-fill"></div>
+            </div>
+            <ul class="component-list" id="component-list"></ul>
+            <div class="mission-tip">
+              <span class="mini-label">THE CUSTOMER VALUE</span>
+              <p id="customer-value"></p>
+            </div>
+            <button class="pulse-status" id="pulse-button" disabled>
+              <span class="pulse-symbol">◎</span
+              ><span
+                ><strong id="pulse-title">Quality pulse</strong
+                ><small id="pulse-caption"
+                  >Space to stop nearby setbacks</small
+                ></span
+              ><span id="pulse-ready">READY</span>
+            </button>
+          </aside>
+        </div>
+        <div
+          class="project-track"
+          aria-label="Project progression"
+          id="project-track"
+        ></div>
+      </section>
+      <div class="under-game">
+        <p>
+          <span class="orange">↗</span> One team. Every component. A complete
+          solution.
+        </p>
+        <span>Original arcade play. Real Accelevation know-how.</span>
+      </div>
+    </main>
+    <footer>
+      <span
+        >ACCELEVATION TIME <span class="footer-divider">/</span> THE
+        INFRASTRUCTURE ARCADE</span
+      ><button class="text-button" id="about-button">About & credits</button>
+    </footer>
+    <dialog id="info-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-header">
+        <span class="eyebrow" id="dialog-eyebrow">FIELD NOTES</span
+        ><button
+          class="icon-button"
+          id="close-dialog"
+          aria-label="Close dialog"
+        >
+          ×
+        </button>
+      </div>
+      <div id="dialog-content"></div>
+    </dialog>
+    <p class="sr-only" id="live-status" aria-live="polite"></p>
+    <noscript
+      ><p class="noscript">
+        Enable JavaScript to play Accelevation Time.
+      </p></noscript
+    >
+  </body>
+</html>
